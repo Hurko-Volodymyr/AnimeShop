@@ -1,6 +1,7 @@
 ﻿using Catalog.Host.Data.Entities;
 using Catalog.Host.Data;
 using Catalog.Host.Repositories.Interfaces;
+using Infrastructure.Services.Abstractions;
 
 namespace Catalog.Host.Repositories
 {

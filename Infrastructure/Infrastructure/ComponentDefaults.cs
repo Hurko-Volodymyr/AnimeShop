@@ -1,6 +1,7 @@
-﻿namespace Infrastructure;
-
-public static class ComponentDefaults
+﻿namespace Infrastructure
 {
-    public const string DefaultRoute = "api/v1/[controller]/[action]";
+    public class ComponentDefaults
+    {
+        public const string DefaultRoute = "api/v1/[controller]/[action]";
+    }
 }

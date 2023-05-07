@@ -1,4 +1,3 @@
-using Catalog.Host;
 using Catalog.Host.Configurations;
 using Catalog.Host.Data;
 using Catalog.Host.Repositories;
@@ -7,6 +6,7 @@ using Catalog.Host.Services;
 using Catalog.Host.Services.Interfaces;
 using Infrastructure.Extensions;
 using Infrastructure.Filters;
+using Infrastructure.Services.Abstractions;
 using Microsoft.OpenApi.Models;
 
 var configuration = GetConfiguration();

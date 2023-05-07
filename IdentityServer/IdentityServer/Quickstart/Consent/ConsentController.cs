@@ -1,7 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using IdentityServer4.Events;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -9,9 +8,6 @@ using IdentityServer4.Stores;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -45,8 +41,7 @@ namespace IdentityServer4.Quickstart.UI
         /// <summary>
         /// Shows the consent screen
         /// </summary>
-        /// <param name="returnUrl"></param>
-        /// <returns></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [HttpGet]
         public async Task<IActionResult> Index(string returnUrl)
         {
@@ -62,6 +57,7 @@ namespace IdentityServer4.Quickstart.UI
         /// <summary>
         /// Handles the consent screen postback
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(ConsentInputModel model)
@@ -93,6 +89,19 @@ namespace IdentityServer4.Quickstart.UI
             return View("Error");
         }
 
+        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
+        {
+            return new ScopeViewModel
+            {
+                Name = scope.Name,
+                DisplayName = scope.DisplayName,
+                Description = scope.Description,
+                Emphasize = scope.Emphasize,
+                Required = scope.Required,
+                Checked = check || scope.Required
+            };
+        }
+
         /*****************************************/
         /* helper APIs for the ConsentController */
         /*****************************************/
@@ -102,7 +111,10 @@ namespace IdentityServer4.Quickstart.UI
 
             // validate return url is still valid
             var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            if (request == null) return result;
+            if (request == null)
+            {
+                return result;
+            }
 
             ConsentResponse grantedConsent = null;
 
@@ -114,6 +126,7 @@ namespace IdentityServer4.Quickstart.UI
                 // emit event
                 await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.ClientId, request.ScopesRequested));
             }
+
             // user clicked 'yes' - validate the data
             else if (model?.Button == "yes")
             {
@@ -195,9 +208,11 @@ namespace IdentityServer4.Quickstart.UI
         }
 
         private ConsentViewModel CreateConsentViewModel(
-            ConsentInputModel model, string returnUrl,
+            ConsentInputModel model,
+            string returnUrl,
             AuthorizationRequest request,
-            Client client, Resources resources)
+            Client client,
+            Resources resources)
         {
             var vm = new ConsentViewModel
             {
@@ -216,7 +231,8 @@ namespace IdentityServer4.Quickstart.UI
             vm.ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
             if (ConsentOptions.EnableOfflineAccess && resources.OfflineAccess)
             {
-                vm.ResourceScopes = vm.ResourceScopes.Union(new ScopeViewModel[] {
+                vm.ResourceScopes = vm.ResourceScopes.Union(new ScopeViewModel[]
+                {
                     GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null)
                 });
             }
@@ -234,19 +250,6 @@ namespace IdentityServer4.Quickstart.UI
                 Emphasize = identity.Emphasize,
                 Required = identity.Required,
                 Checked = check || identity.Required
-            };
-        }
-
-        public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
-        {
-            return new ScopeViewModel
-            {
-                Name = scope.Name,
-                DisplayName = scope.DisplayName,
-                Description = scope.Description,
-                Emphasize = scope.Emphasize,
-                Required = scope.Required,
-                Checked = check || scope.Required
             };
         }
 

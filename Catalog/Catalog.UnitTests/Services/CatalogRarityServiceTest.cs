@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using Catalog.Host.Data.Entities;
 
 namespace Catalog.UnitTests.Services
@@ -19,7 +14,7 @@ namespace Catalog.UnitTests.Services
         private readonly CatalogRarity _testItem = new CatalogRarity()
         {
             Id = 1,
-            Rarity = "Rarity"
+            Rarity = 4
         };
 
         public CatalogRarityServiceTest()
@@ -42,7 +37,7 @@ namespace Catalog.UnitTests.Services
             var testResult = 1;
 
             _catalogRarityRepository.Setup(s => s.AddAsync(
-                It.IsAny<string>())).ReturnsAsync(testResult);
+                It.IsAny<int>())).ReturnsAsync(testResult);
 
             // act
             var result = await _catalogService.AddAsync(_testItem.Rarity);
@@ -58,7 +53,7 @@ namespace Catalog.UnitTests.Services
             int testResult = default;
 
             _catalogRarityRepository.Setup(s => s.AddAsync(
-                It.IsAny<string>())).ReturnsAsync(testResult);
+                It.IsAny<int>())).ReturnsAsync(testResult);
 
             // act
             var result = await _catalogService.AddAsync(_testItem.Rarity);
@@ -72,12 +67,12 @@ namespace Catalog.UnitTests.Services
         {
             // arrange
             var testId = 1;
-            var testProperty = "testProperty";
+            var testProperty = 4;
             var testStatus = true;
 
             _catalogRarityRepository.Setup(s => s.UpdateAsync(
                 It.Is<int>(i => i.Equals(testId)),
-                It.Is<string>(i => i.Equals(testProperty)))).ReturnsAsync(testStatus);
+                It.Is<int>(i => i.Equals(testProperty)))).ReturnsAsync(testStatus);
 
             // act
             var result = await _catalogService.UpdateAsync(testId, testProperty);
@@ -92,10 +87,10 @@ namespace Catalog.UnitTests.Services
             // arrange
             _catalogRarityRepository.Setup(s => s.UpdateAsync(
                 It.IsAny<int>(),
-                It.IsAny<string>())).ReturnsAsync(It.IsAny<bool>);
+                It.IsAny<int>())).ReturnsAsync(It.IsAny<bool>);
 
             // act
-            var result = await _catalogService.UpdateAsync(_testItem.Id, string.Empty);
+            var result = await _catalogService.UpdateAsync(_testItem.Id, -2);
 
             // assert
             result.Should().BeFalse();

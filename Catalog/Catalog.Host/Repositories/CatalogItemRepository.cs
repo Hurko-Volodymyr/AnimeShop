@@ -1,6 +1,7 @@
 using Catalog.Host.Data;
 using Catalog.Host.Data.Entities;
 using Catalog.Host.Repositories.Interfaces;
+using Infrastructure.Services.Abstractions;
 
 namespace Catalog.Host.Repositories;
 
@@ -43,7 +44,7 @@ public class CatalogItemRepository : ICatalogItemRepository
         return new PaginatedItems<CatalogItem>() { TotalCount = totalItems, Data = itemsOnPage };
     }
 
-    public async Task<int?> Add(string name, string region, string birthday, int catalogWeaponId, int catalogRarityId, string pictureFile)
+    public async Task<int?> AddAsync(string name, string region, string birthday, int catalogWeaponId, int catalogRarityId, string pictureFile)
     {
         var item1 = new CatalogItem
         {
@@ -51,7 +52,7 @@ public class CatalogItemRepository : ICatalogItemRepository
             CatalogRarityId = catalogRarityId,
             Region = region,
             Name = name,
-            PictureFileURL = pictureFile,
+            PictureFile = pictureFile,
             Birthday = birthday
         };
         var item = await _dbContext.AddAsync(item1);
@@ -61,7 +62,7 @@ public class CatalogItemRepository : ICatalogItemRepository
         return item.Entity.Id;
     }
 
-    public async Task<PaginatedItems<CatalogItem>> GetByRarityAsync(string rarity)
+    public async Task<PaginatedItems<CatalogItem>> GetByRarityAsync(int rarity)
     {
         var result = await _dbContext.CatalogItems
                   .Include(i => i.CatalogRarity).Where(w => w.CatalogRarity!.Rarity == rarity)
@@ -98,7 +99,7 @@ public class CatalogItemRepository : ICatalogItemRepository
         item!.Birthday = birthday;
         item!.CatalogRarityId = catalogRarityId;
         item!.CatalogWeaponId = catalogWeaponId;
-        item!.PictureFileURL = pictureFile;
+        item!.PictureFile = pictureFile;
 
         _dbContext.Entry(item).CurrentValues.SetValues(item);
         await _dbContext.SaveChangesAsync();

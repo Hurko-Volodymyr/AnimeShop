@@ -3,6 +3,7 @@ using Basket.Host.Services;
 using Basket.Host.Services.Interfaces;
 using Infrastructure.Extensions;
 using Infrastructure.Filters;
+using Infrastructure.Services.Abstractions;
 using Microsoft.OpenApi.Models;
 
 var configuration = GetConfiguration();

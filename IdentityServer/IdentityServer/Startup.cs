@@ -1,11 +1,4 @@
-﻿using System.IO;
-using IdentityServer4.Quickstart.UI;
-using IdentityServer4.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using IdentityServer4.Quickstart.UI;
 
 namespace IdentityServer
 {
@@ -17,10 +10,21 @@ namespace IdentityServer
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables().Build();
-            
+
             services.Configure<AppSettings>(configuration);
 
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "CorsPolicy",
+                    builder => builder
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
 
             services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
@@ -33,15 +37,17 @@ namespace IdentityServer
         public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
-            
+
             app.UseIdentityServer();
             app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
             app.UseStaticFiles();
+
             app.UseRouting();
-            
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
         }
     }

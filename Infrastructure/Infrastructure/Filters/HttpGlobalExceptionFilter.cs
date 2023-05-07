@@ -1,42 +1,43 @@
-using System.Net;
+﻿using System.Net;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Infrastructure.Filters;
-
-public class HttpGlobalExceptionFilter : IExceptionFilter
+namespace Infrastructure.Filters
 {
-    private readonly ILogger<HttpGlobalExceptionFilter> _logger;
-
-    public HttpGlobalExceptionFilter(ILogger<HttpGlobalExceptionFilter> logger)
+    public class HttpGlobalExceptionFilter : IExceptionFilter
     {
-        _logger = logger;
-    }
+        private readonly ILogger<HttpGlobalExceptionFilter> _logger;
 
-    public void OnException(ExceptionContext context)
-    {
-        if (context.Exception is BusinessException ex)
+        public HttpGlobalExceptionFilter(ILogger<HttpGlobalExceptionFilter> logger)
         {
-            var problemDetails = new ValidationProblemDetails()
-            {
-                Instance = context.HttpContext.Request.Path,
-                Status = StatusCodes.Status400BadRequest,
-                Detail = ex.Message
-            };
-
-            context.Result = new BadRequestObjectResult(problemDetails);
-            context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            context.ExceptionHandled = true;
+            _logger = logger;
         }
-        else
+
+        public void OnException(ExceptionContext filterContext)
         {
-            _logger.LogError(
-                new EventId(context.Exception.HResult),
-                context.Exception,
-                context.Exception.Message);
+            if (filterContext.Exception is BusinessException ex)
+            {
+                var problemDetails = new ValidationProblemDetails()
+                {
+                    Instance = filterContext.HttpContext.Request.Path,
+                    Status = StatusCodes.Status400BadRequest,
+                    Detail = ex.Message
+                };
+
+                filterContext.Result = new BadRequestObjectResult(problemDetails);
+                filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                filterContext.ExceptionHandled = true;
+            }
+            else
+            {
+                _logger.LogError(
+                    new EventId(filterContext.Exception.HResult),
+                    filterContext.Exception,
+                    filterContext.Exception.Message);
+            }
         }
     }
 }

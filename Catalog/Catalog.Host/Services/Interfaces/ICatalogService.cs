@@ -8,6 +8,6 @@ public interface ICatalogService
 {
     Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsAsync(int pageSize, int pageIndex, Dictionary<CatalogTypeFilter, int>? filters);
     Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsByWeaponAsync(string weapon);
-    Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsByRarityAsync(string rarity);
+    Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsByRarityAsync(int rarity);
     Task<CatalogItemDto?> GetCatalogItemByIdAsync(int id);
 }

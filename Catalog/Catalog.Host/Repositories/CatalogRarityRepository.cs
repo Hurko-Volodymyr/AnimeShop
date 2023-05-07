@@ -1,6 +1,7 @@
 ﻿using Catalog.Host.Data;
 using Catalog.Host.Data.Entities;
 using Catalog.Host.Repositories.Interfaces;
+using Infrastructure.Services.Abstractions;
 
 namespace Catalog.Host.Repositories
 {
@@ -30,7 +31,7 @@ namespace Catalog.Host.Repositories
             return await _dbContext.CatalogRarities.FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        public async Task<int?> AddAsync(string rarity)
+        public async Task<int?> AddAsync(int rarity)
         {
             var item = await _dbContext.AddAsync(new CatalogRarity
             {
@@ -42,7 +43,7 @@ namespace Catalog.Host.Repositories
             return item.Entity.Id;
         }
 
-        public async Task<bool> UpdateAsync(int id, string rarity)
+        public async Task<bool> UpdateAsync(int id, int rarity)
         {
             var item = await GetByIdAsync(id);
             var status = false;

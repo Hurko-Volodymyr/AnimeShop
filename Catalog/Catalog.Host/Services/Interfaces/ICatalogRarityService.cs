@@ -7,9 +7,9 @@ namespace Catalog.Host.Services.Interfaces
     {
         Task<PaginatedItemsResponse<CatalogRarityDto>> GetCatalogRaritiesAsync();
 
-        Task<int?> AddAsync(string rarity);
+        Task<int?> AddAsync(int rarity);
 
-        Task<bool> UpdateAsync(int id, string rarity);
+        Task<bool> UpdateAsync(int id, int rarity);
 
         Task<bool> DeleteAsync(int id);
     }

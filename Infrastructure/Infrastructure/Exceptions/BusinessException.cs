@@ -1,4 +1,4 @@
-namespace Infrastructure.Exceptions;
+﻿namespace Infrastructure.Exceptions;
 
 public class BusinessException : Exception
 {

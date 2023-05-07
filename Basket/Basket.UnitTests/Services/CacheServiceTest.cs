@@ -1,6 +1,7 @@
 ﻿using Basket.Host.Configurations;
 using Basket.Host.Services;
 using Basket.Host.Services.Interfaces;
+using Infrastructure.Services.Abstractions;
 
 namespace Basket.UnitTests.Services
 {

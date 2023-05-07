@@ -16,7 +16,6 @@ public class CatalogRarityEntityTypeConfiguration
             .IsRequired();
 
         builder.Property(cb => cb.Rarity)
-            .IsRequired()
-            .HasMaxLength(100);
+            .IsRequired();
     }
 }
