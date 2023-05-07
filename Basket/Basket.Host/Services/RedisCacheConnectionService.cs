@@ -1,10 +1,10 @@
-using Basket.Host.Configurations;
-using Basket.Host.Services.Interfaces;
+﻿using Basket.Host.Configurations;
+using Basket.Host.Services.Abstractions;
 using StackExchange.Redis;
 
 namespace Basket.Host.Services
 {
-    public class RedisCacheConnectionService : IRedisCacheConnectionService, IDisposable
+    public class RedisCacheConnectionService : IRedisCacheConnectionService
     {
         private readonly Lazy<ConnectionMultiplexer> _connectionLazy;
         private bool _disposed;
@@ -14,7 +14,7 @@ namespace Basket.Host.Services
         {
             var redisConfigurationOptions = ConfigurationOptions.Parse(config.Value.Host);
             _connectionLazy =
-                new Lazy<ConnectionMultiplexer>(() 
+                new Lazy<ConnectionMultiplexer>(()
                     => ConnectionMultiplexer.Connect(redisConfigurationOptions));
         }
 

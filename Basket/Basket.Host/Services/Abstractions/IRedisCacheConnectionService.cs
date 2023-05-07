@@ -1,6 +1,6 @@
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
-namespace Basket.Host.Services.Interfaces
+namespace Basket.Host.Services.Abstractions
 {
     public interface IRedisCacheConnectionService
     {

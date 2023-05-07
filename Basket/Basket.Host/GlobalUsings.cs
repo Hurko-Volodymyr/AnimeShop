@@ -1,7 +1,9 @@
-global using System;
+﻿global using System;
+global using System.ComponentModel.DataAnnotations;
 global using System.Net;
 global using System.Threading.Tasks;
 global using Microsoft.Extensions.Logging;
+global using Infrastructure.Services.Abstractions;
 global using Infrastructure.Services;
 global using Infrastructure;
 global using Microsoft.AspNetCore.Mvc;

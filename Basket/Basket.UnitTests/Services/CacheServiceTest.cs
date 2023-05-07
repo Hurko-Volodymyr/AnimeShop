@@ -1,9 +1,4 @@
-﻿using Basket.Host.Configurations;
-using Basket.Host.Services;
-using Basket.Host.Services.Interfaces;
-using Infrastructure.Services.Abstractions;
-
-namespace Basket.UnitTests.Services
+﻿namespace Basket.UnitTests.Services
 {
     public class CacheServiceTest
     {
@@ -73,10 +68,10 @@ namespace Basket.UnitTests.Services
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o, t) => o.ToString() !
+                    It.Is<It.IsAnyType>((o, t) => o.ToString()!
                         .Contains($"Cached value for key {testEntity.UserId} cached")),
                     It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>() !),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()!),
                 Times.Never);
         }
 
@@ -106,10 +101,10 @@ namespace Basket.UnitTests.Services
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o, t) => o.ToString() !
+                    It.Is<It.IsAnyType>((o, t) => o.ToString()!
                         .Contains($"Cached value for key {testEntity.UserId} cached")),
                     It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>() !),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()!),
                 Times.Once);
         }
 
@@ -140,10 +135,10 @@ namespace Basket.UnitTests.Services
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o, t) => o.ToString() !
+                    It.Is<It.IsAnyType>((o, t) => o.ToString()!
                         .Contains($"Cached value for key {testEntity.UserId} updated")),
                     It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>() !),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()!),
                 Times.Never);
         }
 
@@ -178,6 +173,52 @@ namespace Basket.UnitTests.Services
 
             // assert
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task RemoveAsync_RemoveKey_IfKeyExists()
+        {
+            // arrange
+            var testName = "testName";
+            var testKeyResponse = true;
+
+            _redisDataBase.Setup(expression: x => x.KeyExistsAsync(
+                    It.IsAny<RedisKey>(),
+                    It.IsAny<CommandFlags>()))
+                .ReturnsAsync(testKeyResponse);
+
+            _redisDataBase.Setup(expression: x => x.KeyDeleteAsync(
+                    It.IsAny<RedisKey>(),
+                    It.IsAny<CommandFlags>()));
+
+            // act
+            var result = await _cacheService.RemoveAsync(testName);
+
+            // assert
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task RemoveAsync_ReturnsFalse_IfKeyNotExist()
+        {
+            // arrange
+            var testName = "testName";
+            var testKeyResponse = false;
+
+            _redisDataBase.Setup(expression: x => x.KeyExistsAsync(
+                    It.IsAny<RedisKey>(),
+                    It.IsAny<CommandFlags>()))
+                .ReturnsAsync(testKeyResponse);
+
+            _redisDataBase.Setup(expression: x => x.KeyDeleteAsync(
+                    It.IsAny<RedisKey>(),
+                    It.IsAny<CommandFlags>()));
+
+            // act
+            var result = await _cacheService.RemoveAsync(testName);
+
+            // assert
+            result.Should().BeFalse();
         }
     }
 }
