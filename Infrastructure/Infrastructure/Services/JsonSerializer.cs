@@ -1,5 +1,4 @@
-using Infrastructure.Services.Interfaces;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Infrastructure.Services
 {
@@ -7,7 +6,7 @@ namespace Infrastructure.Services
     {
         public string Serialize<T>(T data)
         {
-           return JsonConvert.SerializeObject(data);
+            return JsonConvert.SerializeObject(data);
         }
 
         public T Deserialize<T>(string value)

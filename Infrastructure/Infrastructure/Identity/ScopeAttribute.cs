@@ -1,4 +1,4 @@
-namespace Infrastructure.Identity;
+﻿namespace Infrastructure.Identity;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class ScopeAttribute : Attribute

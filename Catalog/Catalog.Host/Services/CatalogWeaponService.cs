@@ -3,6 +3,7 @@ using Catalog.Host.Models.Dtos;
 using Catalog.Host.Models.Response.Items;
 using Catalog.Host.Repositories.Interfaces;
 using Catalog.Host.Services.Interfaces;
+using Infrastructure.Services.Abstractions;
 
 namespace Catalog.Host.Services
 {

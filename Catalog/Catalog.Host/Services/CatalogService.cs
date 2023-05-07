@@ -4,6 +4,7 @@ using Catalog.Host.Models.Enums;
 using Catalog.Host.Models.Response.Items;
 using Catalog.Host.Repositories.Interfaces;
 using Catalog.Host.Services.Interfaces;
+using Infrastructure.Services.Abstractions;
 
 namespace Catalog.Host.Services;
 
@@ -77,7 +78,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
         });
     }
 
-    public async Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsByRarityAsync(string rarity)
+    public async Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsByRarityAsync(int rarity)
     {
         return await ExecuteSafeAsync(async () =>
         {

@@ -1,9 +1,6 @@
 using System.Threading;
 using Catalog.Host.Data.Entities;
 using Catalog.Host.Models.Dtos;
-using Catalog.Host.Models.Response;
-using Catalog.Host.Models.Response.Items;
-using Moq;
 
 namespace Catalog.UnitTests.Services;
 
@@ -235,7 +232,7 @@ public class CatalogServiceTest
     public async Task GetCatalogItemsByRarityAsync_Success()
     {
         // arrange
-        var rarity = "Rarity";
+        var rarity = 4;
 
         var pagingPaginatedItemsSuccess = new PaginatedItems<CatalogItem>()
         {
@@ -268,7 +265,7 @@ public class CatalogServiceTest
         };
 
         _catalogItemRepository.Setup(s => s.GetByRarityAsync(
-            It.IsAny<string>())).ReturnsAsync(pagingPaginatedItemsSuccess);
+            It.IsAny<int>())).ReturnsAsync(pagingPaginatedItemsSuccess);
 
         _mapper.Setup(s => s.Map<CatalogItemDto>(
             It.Is<CatalogItem>(i => i.Equals(catalogItemSuccess)))).Returns(catalogItemDtoSuccess);
@@ -285,7 +282,7 @@ public class CatalogServiceTest
     public async Task GetCatalogItemsByRarityAsync_Failed()
     {
         // arrange
-        var rarity = "Rarity";
+        var rarity = 4;
 
         PaginatedItems<CatalogItem> pagingPaginatedItems = default!;
 
@@ -306,7 +303,7 @@ public class CatalogServiceTest
         };
 
         _catalogItemRepository.Setup(s => s.GetByRarityAsync(
-            It.IsAny<string>())).ReturnsAsync(pagingPaginatedItems);
+            It.IsAny<int>())).ReturnsAsync(pagingPaginatedItems);
 
         _mapper.Setup(s => s.Map<CatalogItemDto>(
             It.Is<CatalogItem>(i => i.Equals(catalogItemSuccess)))).Returns(catalogItemDtoSuccess);

@@ -24,7 +24,7 @@ public class CatalogItemEntityTypeConfiguration
         builder.Property(ci => ci.Birthday)
             .IsRequired(true);
 
-        builder.Property(ci => ci.PictureFileURL)
+        builder.Property(ci => ci.PictureFile)
             .IsRequired(false);
 
         builder.HasOne(ci => ci.CatalogWeapon)

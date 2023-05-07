@@ -9,7 +9,7 @@ public class CatalogItemServiceTest
 
     private readonly Mock<ICatalogItemRepository> _catalogItemRepository;
     private readonly Mock<IDbContextWrapper<ApplicationDbContext>> _dbContextWrapper;
-    private readonly Mock<ILogger<CatalogService>> _logger;
+    private readonly Mock<ILogger<CatalogItemService>> _logger;
 
     private readonly CatalogItem _testItem = new CatalogItem()
     {
@@ -18,19 +18,19 @@ public class CatalogItemServiceTest
         Birthday = "Birthday",
         CatalogWeaponId = 1,
         CatalogRarityId = 1,
-        PictureFileURL = "1.png"
+        PictureFile = "1.png"
     };
 
     public CatalogItemServiceTest()
     {
         _catalogItemRepository = new Mock<ICatalogItemRepository>();
         _dbContextWrapper = new Mock<IDbContextWrapper<ApplicationDbContext>>();
-        _logger = new Mock<ILogger<CatalogService>>();
+        _logger = new Mock<ILogger<CatalogItemService>>();
 
         var dbContextTransaction = new Mock<IDbContextTransaction>();
         _dbContextWrapper.Setup(s => s.BeginTransactionAsync(It.IsAny<CancellationToken>())).ReturnsAsync(dbContextTransaction.Object);
 
-        _catalogService = new CatalogItemService(_dbContextWrapper.Object, _logger.Object, _catalogItemRepository.Object);
+        _catalogService = new CatalogItemService(_dbContextWrapper.Object, _logger.Object, _catalogItemRepository.Object, _logger.Object);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class CatalogItemServiceTest
         // arrange
         var testResult = 1;
 
-        _catalogItemRepository.Setup(s => s.Add(
+        _catalogItemRepository.Setup(s => s.AddAsync(
                It.IsAny<string>(),
                It.IsAny<string>(),
                It.IsAny<string>(),
@@ -48,7 +48,7 @@ public class CatalogItemServiceTest
                It.IsAny<string>())).ReturnsAsync(testResult);
 
         // act
-        var result = await _catalogService.AddAsync(_testItem.Name, _testItem.Region, _testItem.Birthday, _testItem.CatalogWeaponId, _testItem.CatalogRarityId, _testItem.PictureFileURL);
+        var result = await _catalogService.AddAsync(_testItem.Name, _testItem.Region, _testItem.Birthday, _testItem.CatalogWeaponId, _testItem.CatalogRarityId, _testItem.PictureFile);
 
         // assert
         result.Should().Be(testResult);
@@ -60,7 +60,7 @@ public class CatalogItemServiceTest
         // arrange
         int testResult = default;
 
-        _catalogItemRepository.Setup(s => s.Add(
+        _catalogItemRepository.Setup(s => s.AddAsync(
                It.IsAny<string>(),
                It.IsAny<string>(),
                It.IsAny<string>(),
@@ -69,7 +69,7 @@ public class CatalogItemServiceTest
                It.IsAny<string>())).ReturnsAsync(testResult);
 
         // act
-        var result = await _catalogService.AddAsync(_testItem.Name, _testItem.Region, _testItem.Birthday, _testItem.CatalogWeaponId, _testItem.CatalogRarityId, _testItem.PictureFileURL);
+        var result = await _catalogService.AddAsync(_testItem.Name, _testItem.Region, _testItem.Birthday, _testItem.CatalogWeaponId, _testItem.CatalogRarityId, _testItem.PictureFile);
 
         // assert
         result.Should().Be(testResult);

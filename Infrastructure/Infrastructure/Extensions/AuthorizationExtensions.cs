@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -32,19 +32,23 @@ public static class AuthorizationExtensions
                 options.Authority = authority;
                 options.Audience = siteAudience;
                 options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
             });
         services.AddAuthorization(options =>
         {
             options.AddPolicy(AuthPolicy.AllowEndUserPolicy, policy =>
             {
-                    policy.AuthenticationSchemes.Add(AuthScheme.Site);
-                    policy.RequireClaim(JwtRegisteredClaimNames.Sub);
+                policy.AuthenticationSchemes.Add(AuthScheme.Site);
+                policy.RequireClaim(JwtRegisteredClaimNames.Sub);
             });
             options.AddPolicy(AuthPolicy.AllowClientPolicy, policy =>
             {
-                    policy.AuthenticationSchemes.Add(AuthScheme.Internal);
-                    policy.Requirements.Add(new DenyAnonymousAuthorizationRequirement());
-                    policy.Requirements.Add(new ScopeRequirement());
+                policy.AuthenticationSchemes.Add(AuthScheme.Internal);
+                policy.Requirements.Add(new DenyAnonymousAuthorizationRequirement());
+                policy.Requirements.Add(new ScopeRequirement());
             });
         });
 
