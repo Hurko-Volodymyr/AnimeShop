@@ -61,7 +61,7 @@ namespace Infrastructure.Services
                 return response!;
             }
 
-            return default(TResponse)!;
+            return default(TResponse) !;
         }
     }
 }
