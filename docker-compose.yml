@@ -50,7 +50,7 @@ services:
   web.react:
     container_name: lde.web.react
     build: 
-      context: ./Web/diploma-react
+      context: ./Web/webapp
       dockerfile: Dockerfile
     ports:
       - 3000:3000

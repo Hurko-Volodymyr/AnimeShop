@@ -13,6 +13,7 @@ namespace Basket.UnitTests.Services
         {
             Id = 1,
             PictureUrl = "test",
+            Region = "test",
             Price = 1,
             Name = "Test",
         };
@@ -21,6 +22,7 @@ namespace Basket.UnitTests.Services
         {
             Id = 1,
             Name = "Test",
+            Region = "test",
             Price = 1,
             PictureUrl = "Test",
             Count = 1
@@ -37,7 +39,7 @@ namespace Basket.UnitTests.Services
         [Fact]
         public async void GetBasketAsync_Success()
         {
-            // act
+            // arrange
             int testSum = 1;
 
             var basketModelSuccess = new BasketModel()
@@ -52,7 +54,7 @@ namespace Basket.UnitTests.Services
             _cacheService.Setup(s => s.GetAsync<BasketModel>(
                 It.Is<string>(i => i == _testId))).ReturnsAsync(basketModelSuccess);
 
-            // assert
+            // act
             var result = await _basketService.GetBasketAsync(_testId);
 
             // assert
@@ -119,7 +121,7 @@ namespace Basket.UnitTests.Services
                     LogLevel.Information,
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((o, t) => o.ToString()!
-                        .Contains($"Item's count for customer id = {_testItemToBasketModel.Id} was updated")),
+                        .Contains($"Count for item with id = {_testItemToBasketModel.Id} was updated")),
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()!),
                 Times.Once);
@@ -135,6 +137,7 @@ namespace Basket.UnitTests.Services
             {
                 Id = 2,
                 PictureUrl = "test",
+                Region = "Test",
                 Price = 1,
                 Name = "Test",
             };
@@ -226,6 +229,7 @@ namespace Basket.UnitTests.Services
                         Id = 1,
                         Name = "Test",
                         Price = 1,
+                        Region = "Test",
                         PictureUrl = "Test",
                         Count = 2
                     }

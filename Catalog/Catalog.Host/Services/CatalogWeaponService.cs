@@ -11,16 +11,19 @@ namespace Catalog.Host.Services
     {
         private readonly ICatalogWeaponRepository _catalogWeaponRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<CatalogWeaponService> _loggerService;
 
         public CatalogWeaponService(
             IDbContextWrapper<ApplicationDbContext> dbContextWrapper,
             ILogger<BaseDataService<ApplicationDbContext>> logger,
             ICatalogWeaponRepository catalogRarityRepository,
+            ILogger<CatalogWeaponService> loggerService,
             IMapper mapper)
             : base(dbContextWrapper, logger)
         {
             _catalogWeaponRepository = catalogRarityRepository;
             _mapper = mapper;
+            _loggerService = loggerService;
         }
 
         public async Task<PaginatedItemsResponse<CatalogWeaponDto>> GetCatalogWeaponsAsync()
@@ -45,6 +48,7 @@ namespace Catalog.Host.Services
         {
             return await ExecuteSafeAsync(async () =>
             {
+                _loggerService.LogInformation($"Weapon {weapon} was added");
                 return await _catalogWeaponRepository.AddAsync(weapon);
             });
         }
@@ -53,12 +57,14 @@ namespace Catalog.Host.Services
         {
             return await ExecuteSafeAsync(async () =>
             {
+                _loggerService.LogInformation($"Weapon with Id {id} was updated");
                 return await _catalogWeaponRepository.UpdateAsync(id, weapon);
             });
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
+            _loggerService.LogInformation($"Weapon with Id {id} was deleted");
             return await ExecuteSafeAsync(async () => await _catalogWeaponRepository.DeleteAsync(id));
         }
     }

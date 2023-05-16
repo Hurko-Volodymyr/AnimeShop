@@ -31,7 +31,7 @@ namespace Basket.Host.Services
                 basketItem.Count++;
                 result.TotalSum += item.Price;
                 await _cacheService.AddOrUpdateAsync(userId, result);
-                _logger.LogInformation($"Item's count for customer id = {item.Id} was updated");
+                _logger.LogInformation($"Count for item with id = {item.Id} was updated");
             }
             else
             {
@@ -105,6 +105,7 @@ namespace Basket.Host.Services
         public async Task<bool> ClearBasketAsync(string userId)
         {
             var result = await _cacheService.RemoveAsync(userId);
+            _logger.LogInformation($"Basket was deleted");
             return result;
         }
     }

@@ -11,16 +11,19 @@ namespace Catalog.Host.Services
     {
         private readonly ICatalogRarityRepository _catalogRarityRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<CatalogRarityService> _loggerService;
 
         public CatalogRarityService(
             IDbContextWrapper<ApplicationDbContext> dbContextWrapper,
             ILogger<BaseDataService<ApplicationDbContext>> logger,
             ICatalogRarityRepository catalogRarityRepository,
+            ILogger<CatalogRarityService> loggerService,
             IMapper mapper)
             : base(dbContextWrapper, logger)
         {
             _catalogRarityRepository = catalogRarityRepository;
             _mapper = mapper;
+            _loggerService = loggerService;
         }
 
         public async Task<PaginatedItemsResponse<CatalogRarityDto>> GetCatalogRaritiesAsync()
@@ -45,6 +48,7 @@ namespace Catalog.Host.Services
         {
             return await ExecuteSafeAsync(async () =>
             {
+                _loggerService.LogInformation($"Rarity {rarity} was added");
                 return await _catalogRarityRepository.AddAsync(rarity);
             });
         }
@@ -53,12 +57,14 @@ namespace Catalog.Host.Services
         {
             return await ExecuteSafeAsync(async () =>
             {
+                _loggerService.LogInformation($"Rarity with Id = {id} was updated");
                 return await _catalogRarityRepository.UpdateAsync(id, rarity);
             });
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
+            _loggerService.LogInformation($"Rarity with Id = {id} was deleted");
             return await ExecuteSafeAsync(async () => await _catalogRarityRepository.DeleteAsync(id));
         }
     }

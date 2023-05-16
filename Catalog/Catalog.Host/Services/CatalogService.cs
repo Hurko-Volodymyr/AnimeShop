@@ -65,6 +65,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
             var result = await _catalogItemRepository.GetByPageAsync(pageIndex, pageSize, weaponFilter, rarityFilter);
             if (result == null)
             {
+                _logger.LogWarning($"Characters not found");
                 return null;
             }
 

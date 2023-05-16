@@ -1,5 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Catalog.Host.Data.Entities;
+using Catalog.Host.Models.Dtos;
 
 namespace Catalog.UnitTests.Services
 {
@@ -10,6 +16,7 @@ namespace Catalog.UnitTests.Services
         private readonly Mock<IDbContextWrapper<ApplicationDbContext>> _dbContextWrapper;
         private readonly Mock<ILogger<CatalogService>> _logger;
         private readonly Mock<IMapper> _mapper;
+        private readonly Mock<ILogger<CatalogRarityService>> _loggerService;
 
         private readonly CatalogRarity _testItem = new CatalogRarity()
         {
@@ -23,11 +30,12 @@ namespace Catalog.UnitTests.Services
             _dbContextWrapper = new Mock<IDbContextWrapper<ApplicationDbContext>>();
             _logger = new Mock<ILogger<CatalogService>>();
             _mapper = new Mock<IMapper>();
+            _loggerService = new Mock<ILogger<CatalogRarityService>>();
 
             var dbContextTransaction = new Mock<IDbContextTransaction>();
             _dbContextWrapper.Setup(s => s.BeginTransactionAsync(CancellationToken.None)).ReturnsAsync(dbContextTransaction.Object);
 
-            _catalogService = new CatalogRarityService(_dbContextWrapper.Object, _logger.Object, _catalogRarityRepository.Object, _mapper.Object);
+            _catalogService = new CatalogRarityService(_dbContextWrapper.Object, _logger.Object, _catalogRarityRepository.Object, _loggerService.Object, _mapper.Object);
         }
 
         [Fact]
@@ -124,6 +132,57 @@ namespace Catalog.UnitTests.Services
 
             // assert
             result.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task GetCatalogRaritiesAsync_Success()
+        {
+            var rarities = new PaginatedItems<CatalogRarity>()
+            {
+                Data = new List<CatalogRarity>()
+                {
+                    new CatalogRarity()
+                    {
+                        Rarity = 4
+                    }
+                }
+            };
+
+            var catalogRarity = new CatalogRarity()
+            {
+                Rarity = 4
+            };
+
+            var catalogRarityDto = new CatalogRarityDto()
+            {
+                Rarity = 4
+            };
+
+            // arrange
+            _catalogRarityRepository.Setup(s => s.GetAsync()).ReturnsAsync(rarities);
+
+            _mapper.Setup(s => s.Map<CatalogRarityDto>(
+                It.Is<CatalogRarity>(i => i.Equals(catalogRarity)))).Returns(catalogRarityDto);
+
+            // act
+            var result = await _catalogService.GetCatalogRaritiesAsync();
+
+            // arrange
+            result.Should().NotBeNull();
+            result?.Data.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task GetCatalogRaritiesAsync_Failed()
+        {
+            // arrange
+            _catalogRarityRepository.Setup(s => s.GetAsync()).ReturnsAsync((Func<PaginatedItems<CatalogRarity>>)null!);
+
+            // act
+            var result = await _catalogService.GetCatalogRaritiesAsync();
+
+            // assert
+            result.Should().BeNull();
         }
     }
 }

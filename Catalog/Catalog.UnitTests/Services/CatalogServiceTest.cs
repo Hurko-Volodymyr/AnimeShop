@@ -1,6 +1,9 @@
 using System.Threading;
 using Catalog.Host.Data.Entities;
 using Catalog.Host.Models.Dtos;
+using Catalog.Host.Models.Response;
+using Catalog.Host.Models.Response.Items;
+using Moq;
 
 namespace Catalog.UnitTests.Services;
 

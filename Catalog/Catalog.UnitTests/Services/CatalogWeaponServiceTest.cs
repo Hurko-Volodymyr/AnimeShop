@@ -1,5 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Catalog.Host.Data.Entities;
+using Catalog.Host.Models.Dtos;
+using Catalog.Host.Services;
 
 namespace Catalog.UnitTests.Services
 {
@@ -10,6 +17,7 @@ namespace Catalog.UnitTests.Services
         private readonly Mock<IDbContextWrapper<ApplicationDbContext>> _dbContextWrapper;
         private readonly Mock<ILogger<CatalogService>> _logger;
         private readonly Mock<IMapper> _mapper;
+        private readonly Mock<ILogger<CatalogWeaponService>> _loggerService;
 
         private readonly CatalogWeapon _testItem = new CatalogWeapon()
         {
@@ -22,12 +30,13 @@ namespace Catalog.UnitTests.Services
             _catalogWeaponRepository = new Mock<ICatalogWeaponRepository>();
             _dbContextWrapper = new Mock<IDbContextWrapper<ApplicationDbContext>>();
             _logger = new Mock<ILogger<CatalogService>>();
+            _loggerService = new Mock<ILogger<CatalogWeaponService>>();
             _mapper = new Mock<IMapper>();
 
             var dbContextTransaction = new Mock<IDbContextTransaction>();
             _dbContextWrapper.Setup(s => s.BeginTransactionAsync(CancellationToken.None)).ReturnsAsync(dbContextTransaction.Object);
 
-            _catalogService = new CatalogWeaponService(_dbContextWrapper.Object, _logger.Object, _catalogWeaponRepository.Object, _mapper.Object);
+            _catalogService = new CatalogWeaponService(_dbContextWrapper.Object, _logger.Object, _catalogWeaponRepository.Object, _loggerService.Object, _mapper.Object);
         }
 
         [Fact]
@@ -124,6 +133,57 @@ namespace Catalog.UnitTests.Services
 
             // assert
             result.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task GetCatalogWeaponsAsync_Success()
+        {
+            var weapons = new PaginatedItems<CatalogWeapon>()
+            {
+                Data = new List<CatalogWeapon>()
+                {
+                    new CatalogWeapon()
+                    {
+                        Weapon = "weapon"
+                    }
+                }
+            };
+
+            var catalogWeapon = new CatalogWeapon()
+            {
+                Weapon = "weapon"
+            };
+
+            var catalogWeaponDto = new CatalogWeaponDto()
+            {
+                Weapon = "weapon"
+            };
+
+            // arrange
+            _catalogWeaponRepository.Setup(s => s.GetAsync()).ReturnsAsync(weapons);
+
+            _mapper.Setup(s => s.Map<CatalogWeaponDto>(
+                It.Is<CatalogWeapon>(i => i.Equals(catalogWeapon)))).Returns(catalogWeaponDto);
+
+            // act
+            var result = await _catalogService.GetCatalogWeaponsAsync();
+
+            // arrange
+            result.Should().NotBeNull();
+            result?.Data.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task GetCatalogWeaponsAsync_Failed()
+        {
+            // arrange
+            _catalogWeaponRepository.Setup(s => s.GetAsync()).ReturnsAsync((Func<PaginatedItems<CatalogWeapon>>)null!);
+
+            // act
+            var result = await _catalogService.GetCatalogWeaponsAsync();
+
+            // assert
+            result.Should().BeNull();
         }
     }
 }

@@ -1,3 +1,4 @@
+using Catalog.Host;
 using Catalog.Host.Configurations;
 using Catalog.Host.Data;
 using Catalog.Host.Repositories;
