@@ -70,62 +70,7 @@ const OrderComponent: FC = observer(() => {
             }}
         >
       <div className="container p-2">
-        <div className="row mx-2">
-          <div className="pt-2 mb-2 col-md-5 col-lg-4 order-md-first bg-white rounded border border-dark">
-            <h4 className="d-flex justify-content-between align-items-center mb-3 ">
-              <span>Your Basket</span>
-              <span className="badge bg-dark rounded-pill">
-                {myBasketStore.items!.length}
-              </span>
-            </h4>
-            <div className="container">
-              <div className="row">
-                <div className="col d-flex flex-column justify-content-center align-items-end">
-                  <span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="d-md-flex mt-2">
-              <div
-                className="overflow-auto pt-2 mb-3 mb-md-0"
-                style={{ maxWidth: "500px", maxHeight: "310px" }}
-              >
-                {myBasketStore.items!.map((product, index) => (
-                  <>
-                    <div className="card me-2 shadow-0 border mb-2">
-                      <div className="card-body">
-                        <div className="row">
-                          <div className="col-md-2">
-                            <img
-                              key={index}
-                              src={`${product.pictureUrl}`}
-                              className="img-fluid"
-                              alt="product"
-                            />
-                          </div>
-                          <div className="col-md-4 text-center d-flex justify-content-center align-items-center">
-                            <p className="text-muted mb-0">
-                              {product.name}
-                            </p>
-                          </div>
-                          <div className="col-md-3 text-center d-flex justify-content-center align-items-center">
-                            <p className="text-muted mb-0 small">
-                              {product.count}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ))}
-              </div>
-            </div>
-
-            <h5 className="d-flex justify-content-end mt-3">
-              Total: {myBasketStore.totalSum} 
-            </h5>
-          </div>
+        <div className="row mx-2">          
           <div className="col-md-7 col-lg-8">
             <h4 className="mb-3">Your order</h4>
             <form
